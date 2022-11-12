@@ -2,6 +2,8 @@ import torch
 import torchvision
 import torchvision.transforms.functional as TF
 
+from SpatialSemanticStream import SpatialSemanticStream
+
 class PlaceQuerry(SpatialSemanticStream):
   def __init__(self, num_rotations, crop_size, batchnorm = False):
     # crop_size: tuple for 2D dimensions for cropping size

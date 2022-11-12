@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from blocks.ConvBlock import ConvBlock
+
 class SpatialStream(nn.Module):
     def __init__(self, channels_in, channels_out, batchnorm = False):
       super().__init__()

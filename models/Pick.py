@@ -2,6 +2,8 @@ import torch
 import torchvision
 import torchvision.transforms.functional as TF
 
+from SpatialSemanticStream import SpatialSemanticStream
+
 class Pick(SpatialSemanticStream):
   def __init__(self, num_rotations, batchnorm = False):
     super().__init__(6, True, batchnorm)

@@ -1,6 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import clip
+
+from blocks.ConvBlock import ConvBlock
+from blocks.UpBlock import UpBlock
 
 class CLIPWrapper(nn.Module):
     def __init__(self, device="cuda"):
