@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms.functional as TF
 
-from SpatialSemanticStream import SpatialSemanticStream
+from models.SpatialSemanticStream import SpatialSemanticStream
 
 class PickModel(nn.Module):
   def __init__(self, num_rotations, batchnorm = False):
@@ -21,6 +21,5 @@ class PickModel(nn.Module):
       out = self.model.forward(rotated_img, language_command)
       out = TF.rotate(out, -angle, torchvision.transforms.InterpolationMode.BILINEAR)
       out_all.append(out)
-    out_all = torch.Tensor(out_all)
-    out_all = torch.permute(out_all, (1,0,2,3))
+    out_all = torch.cat(out_all, dim=1)
     return out_all

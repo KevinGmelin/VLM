@@ -1,7 +1,7 @@
 import unittest
 import torch
 
-from models import CLIPWrapper, SpatialStream, SemanticStream, SpatialSemanticStream
+from models import CLIPWrapper, SpatialStream, SemanticStream, SpatialSemanticStream, PickModel, PlaceModel
 
 device = "cuda"
 
@@ -70,6 +70,25 @@ class TestSpatialSemanticStream(unittest.TestCase):
         output = self.place_model(rgb_ddd_img, language_command)
         self.assertEqual(output.shape, torch.Size((1, 3, 224, 224)))
 
+class TestPickModel(unittest.TestCase):
+    def test_forward_output_size(self):
+        rgb_ddd_img = torch.randn(1, 6, 224, 224).to(device)
+        language_command = ["Test language command"]
+
+        self.model = PickModel.PickModel(num_rotations=16, batchnorm=False).to(device)
+        output = self.model(rgb_ddd_img, language_command)
+        self.assertEqual(output.shape, torch.Size((1, 16, 224, 224)))
+
+class TestPlaceModel(unittest.TestCase):
+    def test_forward_output_size(self):
+        rgb_ddd_img = torch.randn(1, 6, 224, 224).to(device)
+        language_command = ["Test language command"]
+        pick_locations = [(0,0), (224,224), (100, 100)]
+
+        self.model = PlaceModel.PlaceModel(num_rotations=16, crop_size=9, batchnorm=False).to(device)
+        for pick_location in pick_locations:
+            output = self.model(rgb_ddd_img, language_command, pick_location)
+            self.assertEqual(output.shape, torch.Size((1, 16, 224, 224)))
 
 
 if __name__ == "__main__":

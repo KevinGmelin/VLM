@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms.functional as TF
 
-from SpatialSemanticStream import SpatialSemanticStream
+from models.SpatialSemanticStream import SpatialSemanticStream
 
 
 class PlaceModel(nn.Module):
@@ -25,37 +25,38 @@ class PlaceModel(nn.Module):
             rgb_ddd_img.shape[0] == 1
         ), "Place model currently only supports a batch size of 1"
 
-        # Query net forward
+        query_tensor = self.query_net(rgb_ddd_img, language_command)
+        
         large_crop_dim = int(2**0.5 * self.crop_size)  # Hypotenuse length
-        large_crop_img = TF.crop(
-            rgb_ddd_img,
+        large_crop = TF.crop(
+            query_tensor,
             pick_location[0] - large_crop_dim // 2,
             pick_location[1] - large_crop_dim // 2,
             large_crop_dim,
             large_crop_dim,
         )
-        query_list = []
+        rotated_query_list = []
         for i in range(self.num_rotations):
             # Rotate
             angle = 360 / self.num_rotations * i
             rotated_img = TF.rotate(
-                large_crop_img, angle, torchvision.transforms.InterpolationMode.BILINEAR
+                large_crop, angle, torchvision.transforms.InterpolationMode.BILINEAR
             )
             center_coord = large_crop_dim // 2
             small_crop_img = TF.crop(
                 rotated_img,
-                center_coord - self.crop_size[0] // 2,
-                center_coord - self.crop_size[1] // 2,
-                self.crop_size[0],
-                self.crop_size[1],
+                center_coord - self.crop_size // 2,
+                center_coord - self.crop_size // 2,
+                self.crop_size,
+                self.crop_size,
             )
-            query_list.append(self.query_net(small_crop_img, language_command))
-        query_tensor = torch.Tensor(query_list)
-        assert query_tensor.shape[1] is 1
-        query_tensor = query_tensor[:, 0]
+            rotated_query_list.append(small_crop_img)
+        all_crops = torch.stack(rotated_query_list)
+        assert all_crops.shape[1] == 1
+        all_crops = all_crops[:, 0]
 
         # Key net forward
         key_tensor = self.key_net(rgb_ddd_img, language_command)
         # Cross correlation
-        out = nn.functional.conv2d(key_tensor, query_tensor, padding='same')
+        out = nn.functional.conv2d(key_tensor, all_crops, padding='same')
         return out
