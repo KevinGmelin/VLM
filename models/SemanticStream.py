@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from CLIPWrapper import CLIPWrapper
 from blocks.ConvBlock import ConvBlock
 from blocks.UpBlock import UpBlock
 
