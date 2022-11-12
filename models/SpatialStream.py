@@ -95,6 +95,5 @@ class SpatialStream(nn.Module):
       # Downsample
       out = self.down(out)
       out = F.interpolate(out, size=(rgb_ddd_img.shape[-2], rgb_ddd_img.shape[-1]), mode='bilinear')
-      lateral_out.append(out)
       # Return output and lateral output
       return out, lateral_out

@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from SemanticStream import SemanticStream
-from SpatialStream import SpatialStream
+from models.SemanticStream import SemanticStream
+from models.SpatialStream import SpatialStream
 
 class SpatialSemanticStream(nn.Module):
   def __init__(self, channels_in, pick, batchnorm = False):

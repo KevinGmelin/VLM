@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from CLIPWrapper import CLIPWrapper
-from blocks.ConvBlock import ConvBlock
-from blocks.UpBlock import UpBlock
+from models.CLIPWrapper import CLIPWrapper
+from models.blocks.ConvBlock import ConvBlock
+from models.blocks.UpBlock import UpBlock
 
 class SemanticStream(nn.Module):
     def __init__(self, channels_out, batchnorm = False):
@@ -57,8 +57,6 @@ class SemanticStream(nn.Module):
         )
     
     def forward(self, rgb_image, language_command, lateral_outs):
-        sentence_embedding = self.clip_model.embed_sentence(language_command)
-
         sentence_embedding = self.clip_model.embed_sentence(language_command)
         sentence_embedding = sentence_embedding.unsqueeze(1).unsqueeze(1)
 
