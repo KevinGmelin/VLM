@@ -36,4 +36,4 @@ class SpatialSemanticStream(nn.Module):
     else: 
         out_semantics = self.merge(torch.cat((out_spatial, out_semantics), axis=1))
 
-    return out_spatial, out_semantics
+    return out_semantics
