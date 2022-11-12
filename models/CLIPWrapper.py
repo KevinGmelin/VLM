@@ -5,7 +5,7 @@ import clip
 class CLIPWrapper(nn.Module):
     def __init__(self, device="cuda"):
         super().__init__()
-        self.clip_model, self.preprocess = clip.load("RN50")
+        self.clip_model, self.preprocess = clip.load("RN50", device=device)
         modified_resnet = list(self.clip_model.children())[0]
         self.modified_resnet = torch.nn.Sequential(*list(modified_resnet.children())[:-1])
         self.device = device
