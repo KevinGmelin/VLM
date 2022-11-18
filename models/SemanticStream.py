@@ -14,11 +14,11 @@ class SemanticStream(nn.Module):
         self.channels_out = channels_out
         self.batchnorm = batchnorm
 
-        self.conv1 = nn.Conv2d(2048, 1024, 3, 1, 1)
+        self.conv1 = nn.Sequential(nn.Conv2d(2048, 1024, 3, 1, 1), nn.ReLU())
 
-        self.linear1 = nn.Linear(1024, 1024)
-        self.linear2 = nn.Linear(1024, 512)
-        self.linear3 = nn.Linear(1024, 256)
+        self.linear1 = nn.Sequential(nn.Linear(1024, 1024), nn.ReLU())
+        self.linear2 = nn.Sequential(nn.Linear(1024, 512), nn.ReLU())
+        self.linear3 = nn.Sequential(nn.Linear(1024, 256), nn.ReLU())
 
         self.up_block1 = UpBlock(2048,512)
         self.up_block2 = UpBlock(1024,256)
